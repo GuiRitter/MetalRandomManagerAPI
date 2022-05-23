@@ -22,7 +22,7 @@ const signIn = async (req, res) => {
 		errorMessage.error = 'Invalid password.';
 		return res.status(status.bad).send(errorMessage);
 	}
-	const query = 'SELECT * FROM user WHERE login = $1';
+	const query = 'SELECT * FROM ´user´ WHERE login = $1';
 	try {
 		const { rows } = await dbQuery.query(query, [login]);
 		const dbResponse = rows[0];
