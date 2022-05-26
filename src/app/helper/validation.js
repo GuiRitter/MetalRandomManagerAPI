@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
   */
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
-const hashPassword = password => bcrypt.hashSync(password, salt);
+export const hashPassword = password => bcrypt.hashSync(password, salt);
 
 /**
   * comparePassword
@@ -16,22 +16,15 @@ const hashPassword = password => bcrypt.hashSync(password, salt);
   * @param {string} password
   * @returns {Boolean} return True or False
   */
-const arePasswordsEqual = (hashedPassword, password) => {
+export const arePasswordsEqual = (hashedPassword, password) => {
 	return bcrypt.compareSync(password, hashedPassword);
 };
 
-const isNonEmptyString = input => (!!input) && (input.length > 0) && (!Array.isArray(input));
+export const isNonEmptyString = input => (!!input) && (input.length > 0) && (!Array.isArray(input));
 
 /**
   * Generate Token
   * @param {string} id
   * @returns {string} token
   */
-const generateUserToken = (login, id) => jwt.sign({ id, login }, process.env.SECRET, { expiresIn: '3d' });
-
-export {
-	arePasswordsEqual,
-	generateUserToken,
-	hashPassword,
-	isNonEmptyString
-};
+export const generateUserToken = (login, id) => jwt.sign({ id, login }, process.env.SECRET, { expiresIn: '3d' });

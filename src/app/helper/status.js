@@ -1,6 +1,6 @@
-const errorMessage = { status: 'error' };
+export const errorMessage = { status: 'error' };
 
-const status = {
+export const status = {
 	success: 200,
 	error: 500,
 	notFound: 404,
@@ -11,10 +11,4 @@ const status = {
 	noContent: 204,
 };
 
-const successMessage = { status: 'success' };
-
-export {
-	errorMessage,
-	status,
-	successMessage
-};
+export const successMessage = { status: 'success' };

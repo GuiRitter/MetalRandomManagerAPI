@@ -12,7 +12,7 @@ import {
 	successMessage
 } from '../helper/status';
 
-const signIn = async (req, res) => {
+export const signIn = async (req, res) => {
 	const { login, password } = req.body;
 	if (!isNonEmptyString(login)) {
 		errorMessage.error = 'Invalid login.';
@@ -45,6 +45,3 @@ const signIn = async (req, res) => {
 	}
 };
 
-export {
-	signIn,
-};
