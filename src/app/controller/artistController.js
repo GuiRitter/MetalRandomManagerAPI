@@ -1,9 +1,8 @@
 import dbQuery from '../db/dev/dbQuery';
 
 import {
-	errorMessage,
-	status,
-	successMessage
+	buildError,
+	status
 } from '../helper/status';
 
 import { getOffSet } from '../db/dev/dbQuery';
