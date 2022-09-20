@@ -26,6 +26,6 @@ export const getPage = async (req, res) => {
 		log('getPage', { count, 'rows.length': rows.length });
 		return res.status(status.success).send({ count, rows });
 	} catch (error) {
-		return buildError(log, 'deleteMethod', error, res);
+		return buildError(log, 'getPage', error, res);
 	}
 };
