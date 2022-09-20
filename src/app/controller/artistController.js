@@ -13,7 +13,7 @@ import { getLog } from '../util/log';
 const log = getLog('artistController');
 
 export const getPage = async (req, res) => {
-	const { pageNumber: number, pageSize: size } = req.query;
+	const { number: pageNumber, size: pageSize } = req.query;
 	const offSet = getOffSet(pageNumber, pageSize);
 	log('getPage', { pageNumber, pageSize, offSet });
 	const query = 'SELECT null AS id, null AS name, COUNT(*) AS count FROM artist UNION (SELECT id, name, NULL AS count FROM artist ORDER BY name LIMIT $1 OFFSET $2) ORDER BY count, name;';
