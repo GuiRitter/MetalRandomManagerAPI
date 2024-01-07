@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import artistRoute from './app/route/artistRoute';
 import musicRoute from './app/route/musicRoute';
+import releaseDateRoute from './app/route/releaseDateRoute';
 import toDoRoute from './app/route/toDoRoute';
 import userRoute from './app/route/userRoute';
 
@@ -18,6 +19,7 @@ app.use(express.json());
 
 app.use('/metal_random_manager/api/artist', artistRoute);
 app.use('/metal_random_manager/api/music', musicRoute);
+app.use('/metal_random_manager/api/release_date', releaseDateRoute);
 app.use('/metal_random_manager/api/to_do', toDoRoute);
 app.use('/metal_random_manager/api/user', userRoute);
 
