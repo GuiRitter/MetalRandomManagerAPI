@@ -1,6 +1,6 @@
 import 'dotenv/config'; // always first import
 import express from 'express';
-import 'babel-polyfill';
+import '@babel/polyfill';
 import cors from 'cors';
 
 import artistRoute from './app/route/artistRoute';
