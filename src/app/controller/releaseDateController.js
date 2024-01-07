@@ -13,7 +13,7 @@ import {
 } from '../helper/status';
 
 export const getPendingAlbum = async (req, res) => {
-	const query = 'SELECT ar.name, al.name, al.release_year, al.release_date, al.id FROM artist ar JOIN album al ON ar.id = al.artist WHERE LENGTH(al.release_date) < 5 LIMIT 1';
+	const query = 'SELECT ar.name AS artist, al.name AS album, al.release_year, al.release_date, al.id FROM artist ar JOIN album al ON ar.id = al.artist WHERE LENGTH(al.release_date) < 5 LIMIT 1';
 	try {
 		const { rows } = await dbQuery.query(query);
 		return res.status(status.success).send(rows);
