@@ -17,7 +17,7 @@ export const getPage = async (req, res) => {
 	log('getPage', { pageNumber, pageSize, offSet });
 	const query = 'SELECT null AS id, null AS name, COUNT(*) AS count FROM artist UNION (SELECT id, name, NULL AS count FROM artist ORDER BY name LIMIT $1 OFFSET $2) ORDER BY count, name;';
 	try {
-		const { rows } = await dbQuery.query(query, [pageSize, offSet]);
+		let { rows } = await dbQuery.query(query, [pageSize, offSet]);
 		log('getPage', 'step 0');
 		const count = rows.filter(row => row.count).pop().count;
 		log('getPage', 'step 1');
