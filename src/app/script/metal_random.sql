@@ -58,3 +58,9 @@ create table song (
 	rating char references rating(id) null,
 	Spotify boolean not null
 );
+
+create table note (
+	id uuid default uuid_generate_v4() primary key,
+	song uuid references song(id) not null,
+	content text not null
+);
