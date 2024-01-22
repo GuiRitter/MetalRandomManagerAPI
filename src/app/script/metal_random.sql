@@ -59,7 +59,13 @@ create table song (
 	Spotify boolean not null
 );
 
-create table note (
+create table album_note (
+	id uuid default uuid_generate_v4() primary key,
+	album uuid references album(id) not null,
+	content text not null
+);
+
+create table song_note (
 	id uuid default uuid_generate_v4() primary key,
 	song uuid references song(id) not null,
 	content text not null
