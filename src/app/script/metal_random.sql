@@ -46,7 +46,8 @@ create table album (
 	artist uuid references artist(id) not null,
 	name text not null,
 	release_date text null,
-	release_year text null
+	release_year text null,
+	single boolean not null default false
 );
 
 create table song (
