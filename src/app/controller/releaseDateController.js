@@ -17,7 +17,7 @@ import { getLog } from '../util/log';
 const log = getLog('releaseDateController');
 
 export const getPendingAlbum = async (req, res) => {
-	const query = 'SELECT ar.id as artist_id, ar.name AS artist, al.id as album_id, al.name AS album, al.release_year, al.release_date, al.id FROM artist ar JOIN album al ON ar.id = al.artist WHERE LENGTH(al.release_date) < 5 LIMIT 1';
+	const query = 'SELECT DISTINCT ar.id as artist_id, ar.name AS artist, al.id as album_id, al.name AS album, al.release_year, al.release_date, al.id FROM artist ar JOIN album al ON ar.id = al.artist JOIN song s ON al.id = s.album AND s.step <> 99 WHERE LENGTH(al.release_date) < 5 LIMIT 1;';
 	try {
 		const { rows } = await dbQuery.query(query);
 		return res.status(status.success).send(rows);
