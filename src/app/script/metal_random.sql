@@ -57,7 +57,9 @@ create table song (
 	step smallint references step(code) not null,
 	registered_at text null,
 	rating char references rating(id) null,
-	Spotify boolean not null
+	Spotify boolean not null,
+	track_side char not null default 'A',
+	track_number smallint not null default 0
 );
 
 create table album_note (

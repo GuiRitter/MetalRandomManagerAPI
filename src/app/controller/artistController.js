@@ -7,6 +7,8 @@ import {
 
 import { getOffSet } from '../db/dev/dbQuery';
 
+import { getRowsWithCount } from '../util/crud';
+
 import { getLog } from '../util/log';
 
 const log = getLog('artistController');
@@ -18,13 +20,9 @@ export const getPage = async (req, res) => {
 	const query = 'SELECT null AS id, null AS name, COUNT(*) AS count FROM artist UNION (SELECT id, name, NULL AS count FROM artist ORDER BY name LIMIT $1 OFFSET $2) ORDER BY count, name;';
 	try {
 		let { rows } = await dbQuery.query(query, [pageSize, offSet]);
-		const count = rows.filter(row => row.count).pop().count;
-		rows = rows.filter(row => !row.count).map(row => {
-			delete row.count;
-			return row;
-		});
-		log('getPage', { count, 'rows.length': rows.length });
-		return res.status(status.success).send({ count, rows });
+		const rowsWithCount = getRowsWithCount(rows);
+		log('getPage', { count: rowsWithCount.count, 'rows.length': rowsWithCount.rows.length });
+		return res.status(status.success).send(rowsWithCount);
 	} catch (error) {
 		return buildError(log, 'getPage', error, res);
 	}
