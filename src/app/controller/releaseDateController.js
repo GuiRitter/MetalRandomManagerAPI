@@ -35,6 +35,6 @@ export const setReleaseDate = async (req, res) => {
 		const { rows } = await dbQuery.query(query, [releaseDate, releaseYear, albumId]);
 		return res.status(status.success).send(rows);
 	} catch (error) {
-		return buildError(log, 'getPage', error, res);
+		return buildError(log, 'setReleaseDate', error, res);
 	}
 };
