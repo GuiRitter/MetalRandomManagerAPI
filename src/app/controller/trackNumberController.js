@@ -19,8 +19,8 @@ import { getLog } from '../util/log';
 const log = getLog('releaseDateController');
 
 export const getPendingTrackNumber = async (req, res) => {
-	// const query = 'SELECT ar.id, ar.name, al.id, al.name, al.release_date, s.id, s.name, s.track_number, 0 AS remaining_count FROM song s JOIN album al ON s.album = al.id JOIN artist ar ON al.artist = ar.id WHERE s.album IN (SELECT album FROM song WHERE track_number = 0 LIMIT 1) UNION SELECT NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, COUNT(*) FROM song WHERE track_number = 0;';
-	const query = `SELECT ar.id, ar.name, al.id, al.name, al.release_date, s.id, s.name, s.track_number, 0 AS remaining_count FROM song s JOIN album al ON s.album = al.id JOIN artist ar ON al.artist = ar.id WHERE s.album IN ('34d35d83-2b97-4f10-afb0-8431f5aa3b57') UNION SELECT NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, COUNT(*) FROM song WHERE track_number = 0;`;
+	// const query = 'SELECT ar.id AS artist_id, ar.name AS artist_name, al.id AS album_id, al.name AS album_name, al.release_date, s.id AS song_id, s.name AS song_name, s.track_side, s.track_number, 0 AS remaining_count FROM song s JOIN album al ON s.album = al.id JOIN artist ar ON al.artist = ar.id WHERE s.album IN (SELECT album FROM song WHERE track_number = 0 LIMIT 1) UNION SELECT NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, COUNT(*) FROM song WHERE track_number = 0;';
+	const query = `SELECT ar.id AS artist_id, ar.name AS artist_name, al.id AS album_id, al.name AS album_name, al.release_date, s.id AS song_id, s.name AS song_name, s.track_side, s.track_number, 0 AS remaining_count FROM song s JOIN album al ON s.album = al.id JOIN artist ar ON al.artist = ar.id WHERE s.album IN ('34d35d83-2b97-4f10-afb0-8431f5aa3b57') UNION SELECT NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, COUNT(*) FROM song WHERE track_number = 0;`;
 	try {
 		const { rows } = await dbQuery.query(query);
 		const rowsWithCount = getRowsWithCount(rows);
