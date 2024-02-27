@@ -66,6 +66,7 @@ export const setTrackNumber = async (req, res) => {
 	log('setTrackNumber', { query, innerQueryParameters });
 	try {
 		const { rows } = await dbQuery.query(query, innerQueryParameters);
+		log('setTrackNumber', { 'rows.length': rows.length });
 		return res.status(status.success).send(rows);
 	} catch (error) {
 		return buildError(log, 'setTrackNumber', error, res);

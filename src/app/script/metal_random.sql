@@ -59,7 +59,7 @@ create table song (
 	rating char references rating(id) null,
 	Spotify boolean not null,
 	track_side char not null default 'A',
-	track_number smallint not null default 0
+	track_number numeric(5, 1) not null default 0
 );
 
 create table album_note (
