@@ -62,7 +62,7 @@ export const setTrackNumber = async (req, res) => {
 			: `SELECT CAST($${offSet + 1} AS UUID), $${offSet + 2}, $${offSet + 3}`;
 	}).join(' UNION ');
 	const innerQueryParameters = songList.flatMap(song => [song.id, song.trackSide, Number(song.trackNumber)]);
-	const query = `UPDATE song SET track_side = song_track_side, track_number = CAST(song_track_number AS SMALLINT) FROM (${innerQuery}) union_data WHERE id = song_id RETURNING *;`;
+	const query = `UPDATE song SET track_side = song_track_side, track_number = CAST(song_track_number AS NUMERIC(5, 1)) FROM (${innerQuery}) union_data WHERE id = song_id RETURNING *;`;
 	log('setTrackNumber', { query, innerQueryParameters });
 	try {
 		const { rows } = await dbQuery.query(query, innerQueryParameters);
