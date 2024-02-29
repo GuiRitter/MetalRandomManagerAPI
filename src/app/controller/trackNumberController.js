@@ -126,13 +126,13 @@ export const getPendingTrackNumber = async (req, res) => {
 	}
 };
 
-const updateInnerQuerySansHeader = offset => `${_
+const updateInnerQuerySansHeader = offSet => `${_
 	}SELECT CAST($${offSet + 1} AS UUID)${_
 	}, $${offSet + 2}${_
 	}, $${offSet + 3}${_
 	}, $${offSet + 4}`;
 
-const updateInnerQueryWithHeader = offset => `${_
+const updateInnerQueryWithHeader = offSet => `${_
 	}SELECT CAST($${offSet + 1} AS UUID) AS song_id${_
 	}, $${offSet + 2} AS song_track_side${_
 	}, $${offSet + 3} AS song_track_number${_
