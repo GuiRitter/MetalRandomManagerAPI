@@ -141,7 +141,7 @@ const updateInnerQueryWithHeader = offSet => `${_
 const updateOuterQuery = innerQuery => `${_
 	}UPDATE song ${_
 	}SET track_side = song_track_side, ${_
-	}track_number = CAST(song_track_number AS NUMERIC(5, 1)) ${_
+	}track_number = CAST(song_track_number AS NUMERIC(5, 1)), ${_
 	}track_index = CAST(song_track_index AS NUMERIC(5, 1)) ${_
 	}FROM (${innerQuery}) union_data ${_
 	}WHERE id = song_id ${_
