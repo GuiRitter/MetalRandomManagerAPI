@@ -151,7 +151,7 @@ export const setTrackNumber = async (req, res) => {
 	const { songList } = req.body;
 	log('setTrackNumber', { songList });
 	const innerQuery = songList.map((_, index) => {
-		const offSet = index * 3;
+		const offSet = index * 4;
 		return (index == 0)
 			? updateInnerQueryWithHeader(offSet)
 			: updateInnerQuerySansHeader(offSet);
