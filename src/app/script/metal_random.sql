@@ -81,3 +81,48 @@ create table song_pending_action (
 	content text not null,
 	done boolean not null default false
 );
+
+-- generate list to compare with Spotify
+
+SELECT s.name
+|| E'\t'
+|| ar.name
+|| E'\t'
+|| ROW_NUMBER() OVER(ORDER BY s.rating, al.release_date, s.track_index, al.name)
+|| E'\t'
+|| CASE WHEN s.spotify IS NULL THEN 'n' WHEN s.spotify IS TRUE THEN 't' ELSE 'f' END
+|| E'\t'
+|| s.id
+FROM song s
+JOIN album al ON s.album = al.id
+JOIN artist ar on al.artist = ar.id
+WHERE s.step < 99
+AND s.rating in ('B', 'G')
+ORDER BY s.rating
+, al.release_date
+, s.track_index
+, al.name;
+
+-- generate list of pending to add to Spotify
+
+SELECT '/* '
+|| ROW_NUMBER() OVER(ORDER BY s.rating, al.release_date, s.track_index, al.name)
+|| ' '
+|| s.step
+|| ' '
+|| s.name
+|| ' _ '
+|| ar.name
+|| ' */ UPDATE song SET Spotify = true WHERE id = '''
+|| s.id
+|| ''' returning *;'
+FROM song s
+JOIN album al ON s.album = al.id
+JOIN artist ar ON al.artist = ar.id
+WHERE s.step < 99
+AND s.rating IN ('B', 'G')
+AND Spotify IS NULL
+ORDER BY s.rating
+, al.release_date
+, s.track_index
+, al.name;
