@@ -31,10 +31,9 @@ create table rating (
 
 insert into rating (id, name)
 values ('B', 'best'),
-('G', 'good'),
-('P', 'poor'),
-('U', 'ugly'),
-('W', 'what');
+('E', 'easy'),
+('H', 'hard'),
+('R', 'rare');
 
 create table artist (
 	id uuid default uuid_generate_v4() primary key,
@@ -96,8 +95,9 @@ SELECT s.name
 FROM song s
 JOIN album al ON s.album = al.id
 JOIN artist ar on al.artist = ar.id
-WHERE s.step < 99
-AND s.rating in ('B', 'G')
+WHERE s.Spotify IS NOT FALSE
+AND s.step < 99
+AND s.rating in ('B', 'E', 'H', 'R')
 ORDER BY s.rating
 , al.release_date
 , s.track_index
