@@ -11,6 +11,13 @@ create table ´user´ (
 	password text not null
 );
 
+create table registry (
+	´key´ text primary key,
+	´value´ text null
+);
+
+insert into registry (key, value) values ('client_secret', '');
+
 create table step (
 	code smallint primary key,
 	description text not null
