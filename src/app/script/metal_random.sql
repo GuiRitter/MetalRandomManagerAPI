@@ -81,6 +81,27 @@ create table song_pending_action (
 	done boolean not null default false
 );
 
+create view artist_album_song as
+select ar.id as artist_id
+, ar.name as artist_name
+, al.id as album_id
+, al.name as album_name
+, al.release_year
+, al.release_date
+, al.single
+, s.id as song_id
+, s.name as song_name
+, s.step
+, s.registered_at
+, s.rating
+, s.Spotify
+, s.track_side
+, s.track_number
+, s.track_index
+from artist ar
+join album al on ar.id = al.artist
+join song s on al.id = s.album;
+
 -- generate list to compare with Spotify
 
 SELECT s.name
