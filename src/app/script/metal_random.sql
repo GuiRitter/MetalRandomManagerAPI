@@ -74,6 +74,13 @@ create table song_note (
 	content text not null
 );
 
+create table album_pending_action (
+	id uuid default uuid_generate_v4() primary key,
+	album uuid references album(id) not null,
+	content text not null,
+	done boolean not null default false
+);
+
 create table song_pending_action (
 	id uuid default uuid_generate_v4() primary key,
 	song uuid references song(id) not null,
