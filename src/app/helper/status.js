@@ -16,10 +16,16 @@ export const successMessage = { status: 'success' };
 export const buildError = (log, logName, error, res) =>  {
 	log(logName, { error });
 	if (error) {
-		if (error.message) {
-			errorMessage.error = error.message;
+		if (error.response && error.response.data && error.response.data.error) {
+			errorMessage.error = error.response.data.error;
+		} else if (error.response && error.response.data) {
+			errorMessage.error = error.response.data;
+		} else if (error.response) {
+			errorMessage.error = error.response;
 		} else if (error.where) {
 			errorMessage.error = error.where;
+		} else if (error.message) {
+			errorMessage.error = error.message;
 		} else {
 			errorMessage.error = error;
 		}
