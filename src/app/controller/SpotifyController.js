@@ -20,7 +20,7 @@ export const getToken = async (req, res) => {
 	log('getToken');
 	try {
 		const response = await axios.post(
-			SPOTIFY.API_URL,
+			SPOTIFY.API_URL.TOKEN,
 			{
 				grant_type: 'client_credentials',
 				client_id: process.env.SPOTIFY_CLIENT_ID,
@@ -37,5 +37,24 @@ export const getToken = async (req, res) => {
 		return res.status(status.success).send(rows);
 	} catch (error) {
 		return buildError(log, 'getToken', error, res);
+	}
+};
+
+export const getArtist = async (req, res) => {
+	log('getArtist');
+	try {
+		const query = `SELECT ´value´ from registry WHERE ´key´ like $1;`;
+		const token = (await dbQuery.query(query, [SPOTIFY.TOKEN.KEY]))[0]['´value´'];
+		const response = await axios.get(
+			SPOTIFY.API_URL.ARTIST,
+			{
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			}
+		);
+		return res.status(status.success).send(response);
+	} catch (error) {
+		return buildError(log, 'getArtist', error, res);
 	}
 };

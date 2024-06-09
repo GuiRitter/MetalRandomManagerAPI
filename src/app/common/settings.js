@@ -6,5 +6,8 @@ export const SPOTIFY = {
 			TOKEN_KEY: 'access_token',
 		},
 	},
-	API_URL: 'https://accounts.spotify.com/api/token',
+	API_URL: {
+		TOKEN: 'https://accounts.spotify.com/api/token',
+		ARTIST: 'https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb',
+	},
 };
