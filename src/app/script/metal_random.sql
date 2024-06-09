@@ -16,8 +16,6 @@ create table registry (
 	´value´ text null
 );
 
-insert into registry (key, value) values ('client_secret', '');
-
 create table step (
 	code smallint primary key,
 	description text not null
