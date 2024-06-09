@@ -2,7 +2,7 @@ import 'dotenv/config'; // always first import
 
 import dbQuery from '../db/dev/dbQuery';
 
-import { SPOTIFY_API_URL } from '../common/settings';
+import { SPOTIFY } from '../common/settings';
 
 import {
 	buildError,
@@ -20,7 +20,7 @@ export const getToken = async (req, res) => {
 	log('getToken');
 	try {
 		const response = await axios.post(
-			SPOTIFY_API_URL,
+			SPOTIFY.API_URL,
 			{
 				grant_type: 'client_credentials',
 				client_id: process.env.SPOTIFY_CLIENT_ID,
@@ -32,10 +32,9 @@ export const getToken = async (req, res) => {
 				}
 			}
 		);
-		// const query = `SELECT value FROM registry WHERE key LIKE 'client_secret';`;
-		// const { rows } = await dbQuery.query(query);
-		log('getToken', response);
-		return res.status(status.success).send();
+		const query = `INSERT INTO registry (key, value) VALUES ($1, $2) RETURNING key;`;
+		const { rows } = await dbQuery.query(query, [SPOTIFY.TOKEN.KEY, response[SPOTIFY.TOKEN.RESPONSE.DATA_KEY][SPOTIFY.TOKEN.RESPONSE.TOKEN_KEY]]);
+		return res.status(status.success).send(rows);
 	} catch (error) {
 		return buildError(log, 'getToken', error, res);
 	}

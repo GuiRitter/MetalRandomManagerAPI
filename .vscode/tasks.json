@@ -20,6 +20,6 @@
 			"type": "shell",
 			"command": "node dist/index.js",
 			"problemMatcher": "$tsc"
-		},
+		}
 	]
 }
