@@ -44,7 +44,7 @@ export const getArtist = async (req, res) => {
 	log('getArtist');
 	try {
 		const query = `SELECT ´value´ from registry WHERE ´key´ like $1;`;
-		const token = (await dbQuery.query(query, [SPOTIFY.TOKEN.KEY]))[0]['´value´'];
+		const token = (await dbQuery.query(query, [SPOTIFY.TOKEN.KEY])).rows[0]['´value´'];
 		const response = await axios.get(
 			SPOTIFY.API_URL.ARTIST,
 			{
@@ -53,7 +53,7 @@ export const getArtist = async (req, res) => {
 				}
 			}
 		);
-		return res.status(status.success).send(response);
+		return res.status(status.success).send(response.data);
 	} catch (error) {
 		return buildError(log, 'getArtist', error, res);
 	}
