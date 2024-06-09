@@ -32,8 +32,8 @@ export const getToken = async (req, res) => {
 				}
 			}
 		);
-		const query = `INSERT INTO registry (´key´, ´value´) VALUES ($1, $2) RETURNING ´key´;`;
-		const { rows } = await dbQuery.query(query, [SPOTIFY.TOKEN.KEY, response[SPOTIFY.TOKEN.RESPONSE.DATA_KEY][SPOTIFY.TOKEN.RESPONSE.TOKEN_KEY]]);
+		const query = `UPDATE registry SET ´value´ = $1 WHERE ´key´ like $2 RETURNING ´key´;`;
+		const { rows } = await dbQuery.query(query, [response[SPOTIFY.TOKEN.RESPONSE.DATA_KEY][SPOTIFY.TOKEN.RESPONSE.TOKEN_KEY], SPOTIFY.TOKEN.KEY]);
 		return res.status(status.success).send(rows);
 	} catch (error) {
 		return buildError(log, 'getToken', error, res);

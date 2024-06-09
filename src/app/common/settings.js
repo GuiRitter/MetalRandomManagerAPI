@@ -1,6 +1,6 @@
 export const SPOTIFY = {
 	TOKEN: {
-		KEY: 'spotify token',
+		KEY: 'Spotify token',
 		RESPONSE: {
 			DATA_KEY: 'data',
 			TOKEN_KEY: 'access_token',

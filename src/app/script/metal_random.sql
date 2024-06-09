@@ -16,6 +16,8 @@ create table registry (
 	´value´ text null
 );
 
+insert into registry (key, value) values ('Spotify token', '');
+
 create table step (
 	code smallint primary key,
 	description text not null
