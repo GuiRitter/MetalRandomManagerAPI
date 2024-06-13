@@ -40,13 +40,14 @@ export const getToken = async (req, res) => {
 	}
 };
 
-export const getArtist = async (req, res) => {
-	log('getArtist');
+export const getPlaylistList = async (req, res) => {
+	log('getPlaylistList');
 	try {
 		const query = `SELECT ´value´ from registry WHERE ´key´ like $1;`;
 		const token = (await dbQuery.query(query, [SPOTIFY.TOKEN.KEY])).rows[0]['´value´'];
 		const response = await axios.get(
-			SPOTIFY.API_URL.ARTIST,
+			// Gonna need this instead https://developer.spotify.com/documentation/web-api/tutorials/code-flow
+			SPOTIFY.API_URL.PLAYLIST_LIST,
 			{
 				headers: {
 					'Authorization': `Bearer ${token}`
@@ -55,6 +56,6 @@ export const getArtist = async (req, res) => {
 		);
 		return res.status(status.success).send(response.data);
 	} catch (error) {
-		return buildError(log, 'getArtist', error, res);
+		return buildError(log, 'getPlaylistList', error, res);
 	}
 };

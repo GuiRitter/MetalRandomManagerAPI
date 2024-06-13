@@ -1,6 +1,6 @@
 {
 	"name": "metal_random_manager_api",
-	"version": "1.9.9",
+	"version": "1.9.10",
 	"description": "",
 	"main": "index.js",
 	"scripts": {

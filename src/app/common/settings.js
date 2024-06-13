@@ -8,6 +8,6 @@ export const SPOTIFY = {
 	},
 	API_URL: {
 		TOKEN: 'https://accounts.spotify.com/api/token',
-		ARTIST: 'https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb',
+		PLAYLIST_LIST: 'https://api.spotify.com/v1/me/playlists',
 	},
 };
