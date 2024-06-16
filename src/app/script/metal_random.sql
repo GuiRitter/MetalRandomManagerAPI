@@ -69,6 +69,12 @@ create table song (
 	track_index numeric(5, 1) not null default 0
 );
 
+create table artist_note (
+	id uuid default uuid_generate_v4() primary key,
+	artist uuid references artist(id) not null,
+	content text not null
+);
+
 create table album_note (
 	id uuid default uuid_generate_v4() primary key,
 	album uuid references album(id) not null,
