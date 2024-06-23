@@ -1,8 +1,12 @@
+-- sudo apt-get install postgresql-plperl-11
+
 -- sudo -u postgres createdb metal_random
 
 -- sudo -u postgres psql metal_random
 
 CREATE EXTENSION "uuid-ossp";
+
+CREATE EXTENSION "plperlu";
 
 -- psql metal_random
 
@@ -139,3 +143,11 @@ ORDER BY s.rating
 , al.release_date
 , s.track_index
 , al.name;
+
+-- generate random string
+
+CREATE OR REPLACE FUNCTION generate_random () RETURNS TEXT AS $$
+  my $output=`openssl rand -base64 18`;
+  chomp($output);
+  return $output;
+$$ LANGUAGE plperlu;
