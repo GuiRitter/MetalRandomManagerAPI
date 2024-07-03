@@ -12,15 +12,11 @@ CREATE EXTENSION "plperlu";
 
 create table ´user´ (
 	login text primary key,
-	password text not null
+	password text not null,
+	Spotify_state text null,
+	Spotify_auth_code text null,
+	Spotify_token text null
 );
-
-create table registry (
-	´key´ text primary key,
-	´value´ text null
-);
-
-insert into registry (key, value) values ('Spotify token', '');
 
 create table step (
 	code smallint primary key,
@@ -146,6 +142,7 @@ ORDER BY s.rating
 
 -- generate random string
 
+-- DROP FUNCTION generate_random;
 CREATE OR REPLACE FUNCTION generate_random () RETURNS TEXT AS $$
   my $output=`openssl rand -base64 18`;
   chomp($output);
