@@ -11,7 +11,10 @@ import {
   * @returns {object|void} response object 
   */
 const verifyToken = async (req, res, next) => {
-	const { token } = req.headers;
+	var { token } = req.headers;
+	if (!token) {
+		token = req.query.token;
+	}
 	if (!token) {
 		errorMessage.error = 'Token not provided.';
 		return res.status(status.bad).send(errorMessage);

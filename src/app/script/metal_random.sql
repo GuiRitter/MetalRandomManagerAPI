@@ -1,14 +1,20 @@
+-- sudo apt-get install postgresql-plperl-11
+
 -- sudo -u postgres createdb metal_random
 
 -- sudo -u postgres psql metal_random
 
 CREATE EXTENSION "uuid-ossp";
 
+CREATE EXTENSION "plperlu";
+
 -- psql metal_random
 
 create table ´user´ (
 	login text primary key,
-	password text not null
+	password text not null,
+	Spotify_state text null,
+	Spotify_token text null
 );
 
 create table step (
@@ -60,6 +66,12 @@ create table song (
 	track_side char not null default 'A',
 	track_number numeric(5, 1) not null default 0,
 	track_index numeric(5, 1) not null default 0
+);
+
+create table artist_note (
+	id uuid default uuid_generate_v4() primary key,
+	artist uuid references artist(id) not null,
+	content text not null
 );
 
 create table album_note (
@@ -154,3 +166,12 @@ ORDER BY s.rating
 , al.release_date
 , s.track_index
 , al.name;
+
+-- generate random string
+
+-- DROP FUNCTION generate_random;
+CREATE OR REPLACE FUNCTION generate_random () RETURNS TEXT AS $$
+  my $output=`openssl rand -base64 18`;
+  chomp($output);
+  return $output;
+$$ LANGUAGE plperlu;
