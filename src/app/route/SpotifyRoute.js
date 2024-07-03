@@ -8,6 +8,6 @@ const router = express.Router();
 
 router.get('/login', verifyAuth, login);
 router.get('/playlists', verifyAuth, getPlaylistList);
-router.get('/token', verifyAuth, getToken);
+router.get('/token', getToken);
 
 export default router;

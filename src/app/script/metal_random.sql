@@ -14,7 +14,6 @@ create table ´user´ (
 	login text primary key,
 	password text not null,
 	Spotify_state text null,
-	Spotify_auth_code text null,
 	Spotify_token text null
 );
 

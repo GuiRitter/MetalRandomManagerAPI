@@ -2,11 +2,11 @@ import 'dotenv/config'; // always first import
 
 import dbQuery from '../db/dev/dbQuery';
 
-import { SPOTIFY } from '../common/settings';
+import { API_URL, SPOTIFY, WEB_URL } from '../common/settings';
 
 import {
 	buildError,
-	errorMessage,
+	// errorMessage,
 	status
 } from '../helper/status';
 
@@ -17,24 +17,27 @@ import { getLog } from '../util/log';
 const log = getLog('SpotifyController');
 
 export const getToken = async (req, res) => {
-	log('getToken');
+	log('getToken', { query: req.query });
 	try {
 		const response = await axios.post(
 			SPOTIFY.URL.API.TOKEN,
 			{
-				grant_type: 'client_credentials',
-				client_id: process.env.SPOTIFY_CLIENT_ID,
-				client_secret: process.env.SPOTIFY_CLIENT_SECRET
+				code: req.query.code,
+				redirect_uri: `${API_URL}/Spotify/token`,
+				grant_type: 'authorization_code',
 			},
 			{
 				headers: {
-					'Content-Type': 'application/x-www-form-urlencoded'
+					'content-type': 'application/x-www-form-urlencoded',
+					'Authorization': 'Basic ' + (new Buffer.from(process.env.SPOTIFY_CLIENT_ID + ':' + process.env.SPOTIFY_CLIENT_SECRET).toString('base64'))
 				}
 			}
 		);
-		const query = `UPDATE registry SET ´value´ = $1 WHERE ´key´ like $2 RETURNING ´key´;`;
-		const { rows } = await dbQuery.query(query, [response[SPOTIFY.TOKEN.RESPONSE.DATA_KEY][SPOTIFY.TOKEN.RESPONSE.TOKEN_KEY], SPOTIFY.TOKEN.KEY]);
-		return res.status(status.success).send(rows);
+
+		const query = `UPDATE ´user´ SET Spotify_token = $1 WHERE Spotify_state LIKE $2;`;
+
+		await dbQuery.query(query, [response.data.access_token, req.query.state]);
+		res.redirect(WEB_URL);
 	} catch (error) {
 		return buildError(log, 'getToken', error, res);
 	}
@@ -43,10 +46,9 @@ export const getToken = async (req, res) => {
 export const getPlaylistList = async (req, res) => {
 	log('getPlaylistList');
 	try {
-		const query = `SELECT ´value´ from registry WHERE ´key´ like $1;`;
-		const token = (await dbQuery.query(query, [SPOTIFY.TOKEN.KEY])).rows[0]['´value´'];
+		const query = `SELECT Spotify_token FROM ´user´ WHERE login LIKE $1;`;
+		const token = (await dbQuery.query(query, [req.user.login])).rows[0]['spotify_token'];
 		const response = await axios.get(
-			// Gonna need this instead https://developer.spotify.com/documentation/web-api/tutorials/code-flow
 			SPOTIFY.URL.API.PLAYLIST_LIST,
 			{
 				headers: {
@@ -69,23 +71,17 @@ export const login = async (req, res) => {
 		const { rows } = await dbQuery.query(query, [req.user.login]);
 		const SpotifyState = rows[0]['spotify_state'];
 
-		const parameters = {
+		const SpotifyURL = new URL(SPOTIFY.URL.API.AUTHORIZE);
+
+		SpotifyURL.search = new URLSearchParams({
 			response_type: 'code',
 			client_id: process.env.SPOTIFY_CLIENT_ID,
 			scope: SPOTIFY.SCOPES,
-			redirect_uri: SPOTIFY.URL.REDIRECT,
+			redirect_uri: `${API_URL}/Spotify/token`,
 			state: SpotifyState
-		};
+		});
 
-		const searchParams = new URLSearchParams(parameters);
-
-		const apiEndPoint = new URL(SPOTIFY.URL.API.AUTHORIZE);
-
-		apiEndPoint.search = searchParams;
-
-		log('login', { redirect: apiEndPoint.toString() });
-
-		res.redirect(apiEndPoint.toString());
+		res.redirect(SpotifyURL.toString());
 	} catch (error) {
 		return buildError(log, 'login', error, res);
 	}
