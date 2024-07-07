@@ -16,6 +16,26 @@ import { getLog } from '../util/log';
 
 const log = getLog('SpotifyController');
 
+const _ = '';
+const __ = ' ';
+
+const pendingSpotifyIdQuery = `${_
+	}(${_
+	}${_}SELECT match_string${_
+	}${_}, album${_
+	}${_}, disc_number || ' ' || track_number AS track${_
+	}${_}, id AS Spotify_id${__
+	}${_}FROM spotify_id${__
+	}${_}LIMIT 1${_
+	}) UNION (${_
+	}${_}SELECT artist_name || ' · ' || song_name AS match_string${_
+	}${_}, album_name AS album${_
+	}${_}, track_index || ' ' || track_side || ' ' || track_number AS track${_
+	}${_}, Spotify_id${__
+	}${_}FROM artist_album_song${__
+	}${_}WHERE Spotify_id LIKE 'not searched'${_
+	});`;
+
 export const getToken = async (req, res) => {
 	log('getToken', { query: req.query });
 	try {
@@ -40,6 +60,28 @@ export const getToken = async (req, res) => {
 		res.redirect(WEB_URL);
 	} catch (error) {
 		return buildError(log, 'getToken', error, res);
+	}
+};
+
+export const getPendingSpotifyId = async (req, res) => {
+	log('getPendingSpotifyId');
+	try {
+		const { rows } = await dbQuery.query(pendingSpotifyIdQuery);
+		var spotifyIdRow;
+		var songList = [];
+		rows.forEach(row => {
+			if (row.spotify_id === SPOTIFY.ID.NOT_SEARCHED) {
+				songList.push(row);
+			} else {
+				spotifyIdRow = row;
+			}
+		});
+		return res.status(status.success).send({
+			spotifyIdRow,
+			songList
+		});
+	} catch (error) {
+		return buildError(log, 'getPlaylistList', error, res);
 	}
 };
 

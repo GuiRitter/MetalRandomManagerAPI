@@ -100,6 +100,14 @@ create table song_pending_action (
 	done boolean not null default false
 );
 
+create table Spotify_id (
+	match_string text null,
+	album text null,
+	disc_number text null,
+	track_number text null,
+	id text null
+);
+
 create view artist_album_song as
 select ar.id as artist_id
 , ar.name as artist_name
