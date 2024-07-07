@@ -71,6 +71,7 @@ export const getPendingSpotifyId = async (req, res) => {
 		var songList = [];
 		rows.forEach(row => {
 			if (row.spotify_id === SPOTIFY.ID.NOT_SEARCHED) {
+				delete row.spotify_id;
 				songList.push(row);
 			} else {
 				spotifyIdRow = row;
