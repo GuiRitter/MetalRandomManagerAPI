@@ -25,6 +25,7 @@ const pendingSpotifyIdQuery = `${_
 	}${_}, album${_
 	}${_}, disc_number || ' ' || track_number AS track${_
 	}${_}, id AS Spotify_id${__
+	}${_}, null AS song_id${__
 	}${_}FROM spotify_id${__
 	}${_}LIMIT 1${_
 	}) UNION (${_
@@ -32,6 +33,7 @@ const pendingSpotifyIdQuery = `${_
 	}${_}, album_name AS album${_
 	}${_}, track_index || ' ' || track_side || ' ' || track_number AS track${_
 	}${_}, Spotify_id${__
+	}${_}, song_id${__
 	}${_}FROM artist_album_song${__
 	}${_}WHERE Spotify_id LIKE 'not searched'${_
 	});`;
