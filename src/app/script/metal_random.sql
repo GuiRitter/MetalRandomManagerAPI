@@ -62,7 +62,7 @@ create table song (
 	step smallint references step(code) not null,
 	registered_at text null,
 	rating char references rating(id) null,
-	Spotify boolean null,
+	Spotify_id text not null default 'not searched',
 	track_side char not null default 'A',
 	track_number numeric(5, 1) not null default 0,
 	track_index numeric(5, 1) not null default 0
