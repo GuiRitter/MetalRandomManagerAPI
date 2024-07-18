@@ -129,6 +129,16 @@ from artist ar
 join album al on ar.id = al.artist
 join song s on al.id = s.album;
 
+-- DROP TRIGGER clear_pending_Spotify_id_on_create_or_update_song ON use; DROP FUNCTION clear_pending_Spotify_id;
+CREATE FUNCTION clear_pending_Spotify_id() RETURNS trigger AS $$
+BEGIN
+  DELETE FROM Spotify_id WHERE id LIKE NEW.Spotify_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER clear_pending_Spotify_id_on_create_or_update_song BEFORE INSERT OR UPDATE ON song
+FOR EACH ROW EXECUTE PROCEDURE clear_pending_Spotify_id();
+
 -- generate list to compare with Spotify
 
 SELECT s.name

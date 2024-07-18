@@ -19,6 +19,14 @@ const log = getLog('SpotifyController');
 const _ = '';
 const __ = ' ';
 
+const getPlaylistListQuery = `SELECT Spotify_token FROM ´user´ WHERE login LIKE $1;`;
+
+const getTokenQuery = `UPDATE ´user´ SET Spotify_token = $1 WHERE Spotify_state LIKE $2;`;
+
+const loginQuery = `UPDATE ´user´ SET Spotify_state = generate_random() WHERE login LIKE $1 RETURNING Spotify_state;`;
+
+const setSpotifyIdQuery = 'UPDATE song SET spotify_id = $1 WHERE id = $2 returning *;';
+
 const pendingSpotifyIdQuery = `${_
 	}(${_
 	}${_}SELECT match_string${_
@@ -56,9 +64,8 @@ export const getToken = async (req, res) => {
 			}
 		);
 
-		const query = `UPDATE ´user´ SET Spotify_token = $1 WHERE Spotify_state LIKE $2;`;
 
-		await dbQuery.query(query, [response.data.access_token, req.query.state]);
+		await dbQuery.query(getTokenQuery, [response.data.access_token, req.query.state]);
 		res.redirect(WEB_URL);
 	} catch (error) {
 		return buildError(log, 'getToken', error, res);
@@ -91,8 +98,7 @@ export const getPendingSpotifyId = async (req, res) => {
 export const getPlaylistList = async (req, res) => {
 	log('getPlaylistList');
 	try {
-		const query = `SELECT Spotify_token FROM ´user´ WHERE login LIKE $1;`;
-		const token = (await dbQuery.query(query, [req.user.login])).rows[0]['spotify_token'];
+		const token = (await dbQuery.query(getPlaylistListQuery, [req.user.login])).rows[0]['spotify_token'];
 		const response = await axios.get(
 			SPOTIFY.URL.API.PLAYLIST_LIST,
 			{
@@ -111,9 +117,8 @@ export const getPlaylistList = async (req, res) => {
 export const login = async (req, res) => {
 	log('login');
 	try {
-		const query = `UPDATE ´user´ SET Spotify_state = generate_random() WHERE login LIKE $1 RETURNING Spotify_state;`;
 
-		const { rows } = await dbQuery.query(query, [req.user.login]);
+		const { rows } = await dbQuery.query(loginQuery, [req.user.login]);
 		const SpotifyState = rows[0]['spotify_state'];
 
 		const SpotifyURL = new URL(SPOTIFY.URL.API.AUTHORIZE);
@@ -129,5 +134,16 @@ export const login = async (req, res) => {
 		res.redirect(SpotifyURL.toString());
 	} catch (error) {
 		return buildError(log, 'login', error, res);
+	}
+};
+
+export const setSpotifyId = async (req, res) => {
+	const { songId, SpotifyId } = req.query;
+	log('setSpotifyId', { songId, SpotifyId });
+	try {
+		const { rows } = await dbQuery.query(setSpotifyIdQuery, [SpotifyId, songId]);
+		return res.status(status.success).send(rows);
+	} catch (error) {
+		return buildError(log, 'setSpotifyId', error, res);
 	}
 };
