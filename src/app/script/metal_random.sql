@@ -62,7 +62,7 @@ create table song (
 	step smallint references step(code) not null,
 	registered_at text null,
 	rating char references rating(id) null,
-	Spotify boolean null,
+	Spotify_id text not null default 'not searched',
 	track_side char not null default 'A',
 	track_number numeric(5, 1) not null default 0,
 	track_index numeric(5, 1) not null default 0
@@ -100,6 +100,14 @@ create table song_pending_action (
 	done boolean not null default false
 );
 
+create table Spotify_id (
+	match_string text null,
+	album text null,
+	disc_number text null,
+	track_number text null,
+	id text null
+);
+
 create view artist_album_song as
 select ar.id as artist_id
 , ar.name as artist_name
@@ -120,6 +128,16 @@ select ar.id as artist_id
 from artist ar
 join album al on ar.id = al.artist
 join song s on al.id = s.album;
+
+-- DROP TRIGGER clear_pending_Spotify_id_on_create_or_update_song ON use; DROP FUNCTION clear_pending_Spotify_id;
+CREATE FUNCTION clear_pending_Spotify_id() RETURNS trigger AS $$
+BEGIN
+  DELETE FROM Spotify_id WHERE id LIKE NEW.Spotify_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER clear_pending_Spotify_id_on_create_or_update_song BEFORE INSERT OR UPDATE ON song
+FOR EACH ROW EXECUTE PROCEDURE clear_pending_Spotify_id();
 
 -- generate list to compare with Spotify
 
