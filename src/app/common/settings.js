@@ -16,6 +16,7 @@ export const SPOTIFY = {
 	URL: {
 		API: {
 			AUTHORIZE: 'https://accounts.spotify.com/authorize',
+			TRACKS: id => `https://api.spotify.com/v1/playlists/${id}/tracks`,
 			TOKEN: 'https://accounts.spotify.com/api/token',
 			PLAYLIST_LIST: 'https://api.spotify.com/v1/me/playlists',
 		},
