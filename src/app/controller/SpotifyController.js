@@ -13,6 +13,7 @@ import {
 import axios from '../helper/axios';
 
 import { getLog } from '../util/log';
+import { buildPendingIdRow } from '../util/Spotify';
 
 const log = getLog('SpotifyController');
 
@@ -134,6 +135,39 @@ export const login = async (req, res) => {
 		res.redirect(SpotifyURL.toString());
 	} catch (error) {
 		return buildError(log, 'login', error, res);
+	}
+};
+
+export const populatePendingId = async (req, res) => {
+	log('populatePendingId');
+	try {
+		const token = (await dbQuery.query(getPlaylistListQuery, [req.user.login])).rows[0]['spotify_token'];
+		const response = await axios.get(
+			SPOTIFY.URL.API.TRACKS('3DmpTNycY8UIF9cakolQub'),
+			{
+				headers: {
+					'Authorization': `Bearer ${token}`
+				}
+			}
+		);
+		const pendingIdRowList = response.data.items.map(buildPendingIdRow);
+
+		const insertQuery = 'INSERT INTO Spotify_id (match_string, album, disc_number, track_number, id) VALUES ' + pendingIdRowList.map((_, index) => {
+			const offSet = 5 * index;
+			return `($${offSet + 1}, $${offSet + 2}, $${offSet + 3}, $${offSet + 4}, $${offSet + 5})`;
+		}).join(', ') + ' RETURNING *;';
+
+		const insertQueryParameters = pendingIdRowList.flatMap(row => [row.match_string, row.album, Number(row.disc_number), Number(row.track_number), row.id]);
+
+		log('populatePendingId', { insertQuery, insertQueryParameters });
+
+		const { rows } = await dbQuery.query(insertQuery, insertQueryParameters);
+
+		log('populatePendingId', { rows });
+
+		return res.status(status.success).send(rows);
+	} catch (error) {
+		return buildError(log, 'populatePendingId', error, res);
 	}
 };
 
