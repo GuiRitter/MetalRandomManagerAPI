@@ -12,9 +12,9 @@ const log = getLog('artistController');
 export const getView = async (req, res) => {
 	const { artist: artist, album: album, song: song } = req.query;
 	log('getView', { artist, album, song });
-	const query = 'SELECT * FROM artist_album_song WHERE artist_name like $1 AND album_name like $2 AND song_name like $3;';
+	const query = 'SELECT * FROM artist_album_song WHERE LOWER(artist_name) like LOWER($1) AND LOWER(album_name) like LOWER($2) AND LOWER(song_name) like LOWER($3);';
 	try {
-		let { rows } = await dbQuery.query(query, [`%${artist}%`, `%${album}%`, `%${song}%`]);
+		let { rows } = await dbQuery.query(query, [`%${artist || ''}%`, `%${album || ''}%`, `%${song || ''}%`]);
 		log('getView', { 'rows.length': rows.length });
 		return res.status(status.success).send(rows);
 	} catch (error) {
