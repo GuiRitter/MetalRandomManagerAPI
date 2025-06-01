@@ -69,7 +69,7 @@ export const createSong = async (req, res) => {
 	} = req.body;
 
 	const step = -2;
-	const rating = req.rating || null;
+	const rating = req.body.rating || null;
 
 	log('createSong', { album, name, date, side, number, index });
 	const query = 'INSERT INTO song (album, name, registered_at, track_side, track_number, track_index, step, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
