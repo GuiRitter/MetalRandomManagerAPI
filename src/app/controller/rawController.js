@@ -62,19 +62,19 @@ export const createSong = async (req, res) => {
 	const {
 		album: album,
 		name: name,
-		registered_at: registered_at,
-		track_side: track_side,
-		track_number: track_number,
-		track_index: track_index,
+		date: date,
+		side: side,
+		number: number,
+		index: index,
 	} = req.body;
 
 	const step = -2;
 	const rating = req.rating || null;
 
-	log('createSong', { album, name, registered_at, track_side, track_number, track_index });
+	log('createSong', { album, name, date, side, number, index });
 	const query = 'INSERT INTO song (album, name, registered_at, track_side, track_number, track_index, step, rating) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *;';
 	try {
-		const { rows } = await dbQuery.query(query, [album, name, registered_at, track_side, track_number, track_index, step, rating]);
+		const { rows } = await dbQuery.query(query, [album, name, date, side, number, index, step, rating]);
 		return res.status(status.success).send(rows);
 	} catch (error) {
 		return buildError(log, 'createSong', error, res);
