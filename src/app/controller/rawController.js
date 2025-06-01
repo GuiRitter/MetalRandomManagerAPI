@@ -38,14 +38,20 @@ export const createAlbum = async (req, res) => {
 	const {
 		artist: artist,
 		name: name,
-		release_date: release_date,
-		release_year: release_year,
+		date: date,
 		single: single,
 	} = req.body;
-	log('createAlbum', { artist, name, release_date, release_year, single });
+
+	log('createAlbum', { artist, name, date, single });
+
+	const releaseDate = date;
+	const releaseYear = Number(date.substring(0, 4));
+
+	log('createAlbum', { releaseDate, releaseYear });
+
 	const query = 'INSERT INTO album (artist, name, release_date, release_year, single) VALUES ($1, $2, $3, $4, $5) RETURNING *;';
 	try {
-		const { rows } = await dbQuery.query(query, [artist, name, release_date, release_year, single]);
+		const { rows } = await dbQuery.query(query, [artist, name, releaseDate, releaseYear, single || false]);
 		return res.status(status.success).send(rows);
 	} catch (error) {
 		return buildError(log, 'createAlbum', error, res);
