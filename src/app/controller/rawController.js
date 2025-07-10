@@ -12,9 +12,31 @@ const log = getLog('artistController');
 export const getView = async (req, res) => {
 	const { artist: artist, album: album, song: song } = req.query;
 	log('getView', { artist, album, song });
-	const query = 'SELECT * FROM artist_album_song WHERE LOWER(artist_name) like LOWER($1) AND LOWER(album_name) like LOWER($2) AND LOWER(song_name) like LOWER($3);';
+
+	const whereList = [];
+	const argsList = [];
+
+	if (artist) {
+		whereList.push(` LOWER(artist_name) LIKE LOWER($${argsList.length + 1}) `);
+		argsList.push(`%${artist}%`);
+	}
+
+	if (album) {
+		whereList.push(` LOWER(album_name) LIKE LOWER($${argsList.length + 1}) `);
+		argsList.push(`%${album}%`);
+	}
+
+	if (song) {
+		whereList.push(` LOWER(song_name) LIKE LOWER($${argsList.length + 1}) `);
+		argsList.push(`%${song}%`);
+	}
+
+	const where = whereList.isNotEmpty ? ` WHERE ${whereList.join(' AND ')} ` : '';
+	const args = argsList.isNotEmpty ? argsList : null;
+
+	const query = `SELECT * FROM artist_album_song ${where};`;
 	try {
-		let { rows } = await dbQuery.query(query, [`%${artist || ''}%`, `%${album || ''}%`, `%${song || ''}%`]);
+		let { rows } = await dbQuery.query(query, args);
 		log('getView', { 'rows.length': rows.length });
 		return res.status(status.success).send(rows);
 	} catch (error) {
