@@ -31,11 +31,12 @@ export const getView = async (req, res) => {
 		argsList.push(`%${song}%`);
 	}
 
-	const where = whereList.isNotEmpty ? ` WHERE ${whereList.join(' AND ')} ` : '';
-	const args = argsList.isNotEmpty ? argsList : null;
+	const where = (whereList.length > 0) ? ` WHERE ${whereList.join(' AND ')} ` : '';
+	const args = (argsList.length > 0) ? argsList : null;
 
 	const query = `SELECT * FROM artist_album_song ${where};`;
 	try {
+		log('getView', { query, args });
 		let { rows } = await dbQuery.query(query, args);
 		log('getView', { 'rows.length': rows.length });
 		return res.status(status.success).send(rows);
